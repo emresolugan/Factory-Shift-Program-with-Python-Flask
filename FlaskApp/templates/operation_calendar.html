@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Vardiya Takvimi</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/css/util.css">
+	<link rel="stylesheet" type="text/css" href="static/css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<button type="button" class="factory_calendar"><a class="btn" href="{{ url_for('getaddoperation') }}">Operasyon gir</a></button>
+				<button type="button" class="factory_calendar"><a class="btn" href="{{ url_for('shift_calendar') }}">Vardiya takvimini aç</a></button>
+				<div class="table100">
+					<table>
+						<thead>
+							<tr class="table100-head">
+								<th class="column1">Operation</th>
+								<th class="column2">Machine Name</th>
+								<th class="column3">Operator Name</th>
+								<th class="column3">Date Interval</th>
+								<th class="column4" style="width:190px; text-align:left">Shift Hour</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for o in oresult %}
+								<tr>
+									<td class="column1">{{o[0]}}</td>
+									<td class="column2">{{o[1]}}</td>
+									<td class="column3">{{o[2]}}</td>
+									<td class="column3">{{o[3]}}</td>
+									<td class="column4" style="width:190px; text-align:left">{{o[4]}}</td>
+								</tr>
+						{% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

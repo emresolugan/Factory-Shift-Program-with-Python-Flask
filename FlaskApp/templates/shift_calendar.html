@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Vardiya Takvimi</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/css/util.css">
+	<link rel="stylesheet" type="text/css" href="static/css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<button type="button" class="factory_calendar"><a class="btn" href="{{ url_for('getaddshift') }}">Vardiya gir</a></button>
+				<button type="button" class="factory_calendar"><a class="btn" href="{{ url_for('operation_calendar') }}">Operasyon takvimini aç</a></button>
+				<div class="table100">
+					<table>
+						<thead>
+							<tr class="table100-head">
+								<th class="column1">Vardiya Adı</th>
+                                <th class="column1">Vardiya Tarihi</th>
+								<th class="column2">Tempo</th>
+								<th class="column3">Vardiya Saatleri</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for s in sresult %}
+								<tr>
+									<td class="column1">{{s[0]}}</td>
+									<td class="column2">{{s[1]}}</td>
+									<td class="column3">{{s[2]}}</td>
+									<td class="column3" style="width:190px; text-align:left">{{s[3]}}</td>
+								</tr>
+						{% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

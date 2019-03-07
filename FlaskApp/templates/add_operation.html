@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Add Operation</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/add_update/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/add_update/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+
+	<link rel="stylesheet" type="text/css" href="static/add_update/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/add_update/css/util.css">
+	<link rel="stylesheet" type="text/css" href="static/add_update/css/main.css">
+<!--===============================================================================================-->
+	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+
+
+	<div class="container-contact100">
+		<div class="wrap-contact100">
+			<form class="contact100-form validate-form" method="POST" action="./addoperation">
+				<span class="contact100-form-title">
+					Operasyon Ekle
+				</span>
+
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Operasyon*</span>
+					<input class="input100" type="text" name="oname" placeholder="Operasyon ismini gir">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Makineyi Seç*</span>
+					<div>
+						<select class="selection-2" id="omachine" name="omachine">
+							<option></option>
+                            {% for m in machines %}
+							<option value="{{m[0]}}">{{m[1]}}</option>
+                            {% endfor %}
+						</select>
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Operatör Seç*</span>
+					<div>
+						<select class="selection-2" id="ooperator" name="ooperator">
+							<option></option>
+                            {% for o in operators %}
+							<option value="{{o[0]}}">{{o[1]}}</option>
+                            {% endfor %}
+						</select>
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Vardiya Seç*</span>
+					<div>
+						<select class="selection-2" id="oshift" name="oshift">
+							<option></option>
+                           < {% for s in shifts %}
+							<option value="{{s[0]}}">{{s[1]}}</option>
+                            {% endfor %}
+						</select>
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Vardiya Saatini Seç*</span>
+					<div>
+						<select  id="oshifthour" name="oshifthour" >
+						</select>
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="container-contact100-form-btn">
+					<div class="wrap-contact100-form-btn">
+						<div class="contact100-form-bgbtn"></div>
+						<button class="contact100-form-btn" id="submitbtn">
+							<span>
+								Submit
+								<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+							</span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+<script>
+    "use strict";
+
+	var alertt = {{ alertt }};
+
+	$(window).load(function(){
+	if(alertt == 1){
+		window.alert("Makine şu an kullanılamaz durumdadır. Yeniden Deneyin.");
+	}
+	else if(alertt == 2){
+		window.alert("Operatör en son yine gece çalışmıştır o yüzden saati değiştiriniz.");
+	}
+	});
+
+    var shifts = {{ shifts|tojson }};
+    var shifthours = {{ shifthours|tojson }};
+    var hours = {{ hours|tojson }};
+    var operators = {{ operators|tojson }};
+    var experiences = {{ experiences|tojson }};
+
+    var oshift = $('select#oshift');
+    var oshifthour = $('select#oshifthour');
+    var ooperator = $('select#ooperator');
+	var omachine = $('select#omachine');
+
+    oshift.change(function(ev) {
+        oshifthour.empty();
+		oshifthour.append($('<option/>'));
+
+		console.log(oshift.val());
+
+        for (var sh in shifthours) {
+        	console.log(shifthours[sh]);
+
+            for (var i in shifthours[sh]) {
+
+				if (shifthours[sh][i] == parseInt(oshift.val())) {
+					for(var j in hours) {
+					console.log(hours[j][0]);
+					console.log(shifthours[sh][2]);
+						if (hours[j][0] == shifthours[sh][2]) {
+							oshifthour.append($('<option/>', {'value': hours[j][0], 'text': hours[j][1]}));
+						}
+					}
+            	}
+        	}
+        }
+    });
+
+    $( "#submitbtn" ).click(function(e) {
+    	debugger;
+    	var found = 0;
+    	console.log(operators);
+    	for(var op in operators)
+    	{
+    	console.log(operators[op][0]);
+    	console.log(ooperator.val());
+    		if(operators[op][0] == parseInt(ooperator.val()))
+    		{
+    			if(operators[op][3] != null)
+    			{
+        		  var answer = confirm('Operatörün' + ' ' + operators[op][3] + ' raporu var eminmisin?');
+        		  if(answer != true)
+        		  {
+        		  location.reload();
+        		  }
+        		  else
+        		  {
+					console.log(experiences);
+					for(var exp in experiences)
+					{
+						if(experiences[exp][2] == parseInt(ooperator.val()) && experiences[exp][1] == parseInt(omachine.val()))
+						{
+							found++;
+							if(experiences[exp][3] == null)
+							{
+							    var answer = confirm('Operatörün ilgili makinede tecrübesi yoktur. Devam etmek istiyormusunuz?');
+        		  				if(answer != true)
+        		  				{
+        		  					location.reload();
+        		  				}
+							}
+							else
+							{
+						        var answer = confirm('Operatörün ilgili makinede' + experiences[exp][3] + ' kadar tecrübesi vardır. Devam etmek istiyormusunuz?');
+        		  				if(answer != true)
+        		  				{
+        		  					location.reload();
+        		  				}
+							}
+						}
+
+					}
+        		  }
+    			}
+    			else
+    			{
+    			console.log(experiences);
+					for(var exp in experiences)
+					{
+						if(experiences[exp][2] == parseInt(ooperator.val()) && experiences[exp][1] == parseInt(omachine.val()))
+						{
+							found++;
+							if(experiences[exp][3] == null)
+							{
+							    var answer = confirm('Operatörün ilgili makinede tecrübesi yoktur. Devam etmek istiyormusunuz?');
+        		  				if(answer != true)
+        		  				{
+        		  					location.reload();
+        		  				}
+							}
+							else
+							{
+						        var answer = confirm('Operatörün ilgili makinede' + experiences[exp][3] + ' kadar tecrübesi vardır. Devam etmek istiyormusunuz?');
+        		  				if(answer != true)
+        		  				{
+        		  					location.reload();
+        		  				}
+							}
+						}
+					}
+    			}
+    			if(found == 0)
+    			{
+					var answer = confirm('Operatörün ilgili makinede tecrübe bilgisi bulunmamaktadır. Devam etmek istiyormusunuz?');
+        		  	if(answer != true)
+        		  	{
+        		  		location.reload();
+        		  	}
+    			}
+    		}
+    	}
+	});
+</script>
+
+
+
+</body>
+</html>
